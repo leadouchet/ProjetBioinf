@@ -1,8 +1,5 @@
 #! /usr/bin/env python
 # -*- coding:utf-8 -*-
-import random
-import string
-import numpy as np
 from Gene import Gene
 
 class Genome() : 
@@ -12,8 +9,9 @@ class Genome() :
 		self.mean_size = mean_size
 		self.nbr_inversion = 0
 		self.nbr_mutation = 0
+		self.generation = 0
 		if genome == None : 
-			self.genome = Create_genome()
+			self.genome = self.Create_genome()
 		else : 
 			self.genome = genome
 		self.genome_ancestral = self.genome
@@ -23,7 +21,7 @@ class Genome() :
 		Genome = []
 		for i in range(0,self.nbr_gene) : 
 			taille_gene = int(random.gauss(self.mean_size,1))
-			Genome += [Gene(taille_gene, position)]
+			Genome += [Gene(taille_gene, positions)]
 			positions += taille_gene
 		return(Genome)
 	
@@ -43,71 +41,35 @@ class Genome() :
 	
 	def MutateGenome(self,m) : 
 		for gene in self.genome : 
-			self.nbr_mutation += gene.MutationPonctuelles(m)
+			gene.MutationPonctuelles(m)
+			self.nbr_mutation += gene.mutation
 	
 	def Aligment(self) :
 		nbr_mutation = 0 
 		for gene in self.genome : 
 			nbr_mutation += gene.NeedlemanWunsch()
 		return(nbr_mutation)
-
-"""	
-	def NeedlemanWunsch(self,GenomeB) :
-		# Creation de la matrice F 
-		Sb = len(B)
-		F = np.ones((Sa, Sb))
-		d = -1 # Pénalité de trou
-		S = np.array([[1,0,0,0],[0,1,0,0],[0,0,1,0],[0,0,0,1]]) #Matrice de similarité
-		for i in range(Sa) : 
-			F[i, 0] = d*i
-		for j in range(Sb) : 
-			F[0,j] = d*j
-		for i in range(1,Sa) : 
-			for j in range(1,Sb) :
-				pA = seq.index(A[i])
-				pB = seq.index(B[j])
-				Choice1 = F[i-1,j-1] + S[pA, pB]
-				Choice2 = F[i-1, j] + d
-				Choice3 = F[i, j-1] + d
-				F[i, j] = max(Choice1, Choice2, Choice3)
-	# Alignment
-		AlignmentA = ""
-		AlignmentB = ""
-		i = Sa - 1
-		j = Sb - 1
-		Sc = Score = F[i, j]
-		while (i > 0 and j > 0) : 
-			Score = F[i, j]
-			ScoreDiag = F[i - 1, j - 1]
-			ScoreUp = F[i, j - 1]
-			ScoreLeft = F[i - 1, j]
-			pA = seq.index(A[i])
-			pB = seq.index(B[j])
-			if (Score == ScoreDiag + S[pA, pB]) : 
-				AlignmentA = A[i] + AlignmentA
-				AlignmentB = B[j] + AlignmentB
-				i = i - 1
-				j = j - 1
-			elif (Score == ScoreLeft + d) : 
-				AlignmentA = A[i] + AlignmentA
-				AlignmentB = "-" + AlignmentB
-				i = i - 1
-			elif Score == ScoreUp + d : 
-				AlignmentA = "-" + AlignmentA
-				AlignmentB = B[j] + AlignmentB
-				j = j - 1
-		while (i >= 0) : 
-			AlignmentA = A[i] + AlignmentA
-			AlignmentB = "-" + AlignmentB
-			i = i - 1
-		while (j >= 0) : 
-			AlignmentA = "-" + AlignmentA
-			AlignmentB = B[j] + AlignmentB
-			j = j - 1
-		return((AlignmentA, AlignmentB, Sc))
-"""
+	
+	def Estimated_mutation(self) :
+		ObservedMutation = 0 
+		for gene in self.genome : 
+			ObservedMutation += gene.NeedlemanWunsch()
+		return(ObservedMutation)
+			
+	def Evolution_mutation(self, nbr_generation, m) :
+		TrueMutation = [0]
+		ObservedMutation = [0] 
+		while self.generation < nbr_generation : 
+			self.MutateGenome(m)
+			print(TrueMutation)
+			print(ObservedMutation)
+			TrueMutation += [self.nbr_mutation]
+			ObservedMutation += [self.Estimated_mutation()]
+		
 """
 19 inversions en 25 ans sur une bactérie comportant approximativement 4200 gènes, 
 4Mb de séquence codante. 
 environ 120 mutations ponctuelles sur la même durée
 """
+G1 = Genome(1000, 50)
+G1.Evolution_mutation(100,0.000001)  #Drosophile 3,4*10-10

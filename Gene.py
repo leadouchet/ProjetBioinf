@@ -3,6 +3,7 @@
 import random
 import string
 import numpy as np
+from Bio import pairwise2
 
 class Gene() : 
 	
@@ -13,12 +14,12 @@ class Gene() :
 		self.sens = 1
 		self.bases = ["A", "T", "G" , "C"]
 		self.mutation = 0
-		self.invertions = 0
+		self.inversions = 0
 		if sequence == None : 
-			self.seq = CreateGene(self.size)
+			self.seq = self.CreateGene(self.size)
 		else : 
 			self.seq = sequence
-		self.seq_ancestral = self.seq
+		self.seq_ancestral = str(self.seq)
 
 	def CreateGene(self,taille) : 
 		k = 0
@@ -29,25 +30,24 @@ class Gene() :
 		gene = string.join(choix,"")
 		return gene
 		
-	def Invertion_sequence(self) :
+	def Invertion_sequence(self, m) :
 		self.seq = self.seq[::-1] 
 		self.sens *= -1 
 		deb = self.end
 		self.debut = self.end
 		self.end = deb
-		self.invertion +=1
-		
+		self.inversions +=1
+
 	def MutationPonctuelles(self,m) :
 		n = 0
 		for base in range(self.size) : 
 			mute = random.random()
 			if mute < m : 
-				seq = self.bases
+				seq = list(self.bases) # On ne peut pas muter avec la meme base
 				n += 1
-				seq.remove(self.sequence[base])
-				self.sequence = self.sequence[0:base] + random.choice(seq)+ self.sequence[base+1 : S]
+				seq.remove(self.seq[base])
+				self.seq = self.seq[0:base] + random.choice(seq)+ self.seq[base+1 : self.size]
 				self.mutation += 1
-		return(n)
 	
 	def NeedlemanWunsch(self) :
 		# Creation de la matrice F 
@@ -60,8 +60,8 @@ class Gene() :
 			F[0,j] = d*j
 		for i in range(1,self.size) : 
 			for j in range(1,self.size) :
-				pA = seq.index(self.seq[i])
-				pB = seq.index(self.seq_ancestral[j])
+				pA = self.bases.index(self.seq[i])
+				pB = self.bases.index(self.seq_ancestral[j])
 				Choice1 = F[i-1,j-1] + S[pA, pB]
 				Choice2 = F[i-1, j] + d
 				Choice3 = F[i, j-1] + d
@@ -72,13 +72,14 @@ class Gene() :
 		i = self.size - 1
 		j = self.size - 1
 		Sc = Score = F[i, j]
+		nbr_mutation = 0
 		while (i > 0 and j > 0) : 
 			Score = F[i, j]
 			ScoreDiag = F[i - 1, j - 1]
 			ScoreUp = F[i, j - 1]
 			ScoreLeft = F[i - 1, j]
-			pA = seq.index(self.seq[i])
-			pB = seq.index(self.seq_ancestral[j])
+			pA = self.bases.index(self.seq[i])
+			pB = self.bases.index(self.seq_ancestral[j])
 			if (Score == ScoreDiag + S[pA, pB]) : 
 				#AlignmentA = self.seq[i] + AlignmentA
 				#AlignmentB = self.seq_ancestral[j] + AlignmentB
@@ -105,3 +106,4 @@ class Gene() :
 			#AlignmentB = self.seq_ancestral[j] + AlignmentB
 			j = j - 1
 		return(nbr_mutation)
+
