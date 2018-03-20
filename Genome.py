@@ -47,19 +47,16 @@ class Genome() :
 		for gene in self.genome : 
 			gene.MutationPonctuelles(m)
 			self.nbr_mutation += gene.mutation
-	
-	def Aligment(self) :
-		nbr_mutation = 0 
-		for gene in self.genome : 
-			nbr_mutation += gene.NeedlemanWunsch()
-		return(nbr_mutation)
+
 	
 	def Estimated_mutation(self) :
 		ObservedMutation = 0 
 		for gene in self.genome : 
-			ObservedMutation += gene.NeedlemanWunsch()
+			#ObservedMutation += gene.NeedlemanWunsch()
+			ObservedMutation += gene.nbMut()
 		return(ObservedMutation)
 			
+
 	def Evolution_mutation(self, nbr_generation, m) :
 		TrueMutation = [0]
 		ObservedMutation = [0] 
@@ -74,6 +71,7 @@ class Genome() :
 				TrueMutation += [self.nbr_mutation]
 				ObservedMutation += [self.Estimated_mutation()]
 		return([TrueMutation, ObservedMutation])
+
 	def Comp_graph(self):
 		comp_graphe = dict()
 		for gene in self.genome_ancestral :
