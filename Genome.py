@@ -2,6 +2,7 @@
 # -*- coding:utf-8 -*-
 from Gene import Gene
 import random
+import numpy as np
 from matplotlib import use
 use('qt4agg')
 import matplotlib.pyplot as plt
@@ -30,16 +31,15 @@ class Genome() :
 		return(Genome)
 	
 	def Inversion_aleatoire(self) : 
-		pos_1 = random.randint(0, self.nbr_gene-1)
-		pos_2 = random.randint(0, self.nbr_gene-1)
-		if pos_1 != pos_2 :
-			self.nbr_inversion += 1 
-			debut = min([pos_1, pos_2])
-			fin = max([pos_1, pos_2])-1
-			invertseq = self.genome[debut:fin]
-			self.genome = self.genome[0:debut] + invertseq[::-1] + self.genome[fin : self.nbr_gene]  
-			for g in range(debut, fin) : 
-				self.genome[g].Inversion_sequence()
+		# Triage au hasard de deux positions de gènes
+		pos = np.random.choice(np.array(range(self.nbr_gene)), 2, replace = False) 
+		self.nbr_inversion += 1 
+		debut = min(pos)
+		fin = max(pos)
+		invertseq = self.genome[debut:fin]
+		self.genome = self.genome[0:debut] + invertseq[::-1] + self.genome[fin : self.nbr_gene]  
+		for g in range(debut, fin) : 
+			self.genome[g].Inversion_sequence()
 
 	def MutateGenome(self,m) : 
 		for gene in self.genome : 
@@ -123,17 +123,14 @@ class Genome() :
 		inversion_observee = [0]
 		while self.nbr_inversion < nbr_inversion : 
 			self.Inversion_aleatoire()
-			if self.nbr_inversion % 1 == 0 : 
+			if self.nbr_inversion % 100 == 0 : 
 				graph = self.Comp_graph()
-				print(graph)
-				nbr_cycle = self.number_of_cycle(graph)
-				print(nbr_cycle)
+				nbr_cycle = self.number_of_cycle(graph)+1
 				inversion_observee += [self.nbr_gene - nbr_cycle]
 		return(inversion_observee)
 
 	def number_of_cycle(self,Dico):
 		c = 0
-		c2 = 0
 		queue = list(Dico.keys())
 		while len(queue) != 0:
 			myKey = queue[0]
@@ -146,8 +143,6 @@ class Genome() :
 			queue.remove(start)
 			if (start != end):
 				queue.remove(end)
-			else:
-				c2 += 1
 			while 1:
 				if (start == end):
 					break
@@ -168,16 +163,18 @@ class Genome() :
 		
 
 """
-19 inversions en 25 ans sur une bactérie comportant approximativement 4200 gènes, 
-4Mb de séquence codante. 
-environ 120 mutations ponctuelles sur la même durée
+19 inversions en 25 ans probabilité de 0.76
+une bactérie comportant approximativement 4200 gènes, 
+4Mb de séquence codante.  = taille des gènes de 952.38
+environ 120 mutations ponctuelles sur la même durée 
 """
-G1 = Genome(10, 3000)
-I = G1.Evolution_inversion(1)
-plt.plot(range(0,len(I)), I , label = "Inversion observées")
-plt.plot(range(0,len(I)), range(0,len(I)), label = "Inversion effectuée")
-plt.show()
+G1 = Genome(4200, 10)
+I = G1.Evolution_inversion(10000)
+plt.plot(np.array(range(0,len(I)))*100, I , label = "Inversion observées")
+plt.plot(np.array(range(0,len(I)))*100, np.array(range(0,len(I)))*100, label = "Inversion effectuée")
 plt.legend()
+plt.show()
+
 
 
 #G1.Evolution_mutation(100,0.000001)  #Drosophile 3,4*10-10
