@@ -10,8 +10,6 @@ class Gene() :
 	def __init__(self, size, PositionDebut, posInit, sequence = None) : 
 		self.posInit = posInit
 		self.size = size
-		self.debut = PositionDebut
-		self.end = self.debut + self.size
 		self.sens = 1
 		self.bases = ["A", "T", "G" , "C"]
 		self.mutation = 0
@@ -31,12 +29,9 @@ class Gene() :
 		gene = str.join("", choix)
 		return gene
 		
-	def Invertion_sequence(self, m) :
+	def Inversion_sequence(self) :
 		self.seq = self.seq[::-1] 
 		self.sens *= -1 
-		deb = self.end
-		self.debut = self.end
-		self.end = deb
 		self.inversions +=1
 
 	def MutationPonctuelles(self,m) :
