@@ -27,7 +27,7 @@ class Gene() :
 		while k < taille : 
 			k += 1
 			choix += [random.choice(self.bases)]
-		gene = string.join(choix,"")
+		gene = str.join("", choix)
 		return gene
 		
 	def Invertion_sequence(self, m) :
@@ -106,4 +106,10 @@ class Gene() :
 			#AlignmentB = self.seq_ancestral[j] + AlignmentB
 			j = j - 1
 		return(nbr_mutation)
+
+
+
+
+
+
 

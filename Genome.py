@@ -1,6 +1,10 @@
 #! /usr/bin/env python
 # -*- coding:utf-8 -*-
 from Gene import Gene
+import random
+from matplotlib import use
+use('qt4agg')
+import matplotlib.pyplot as plt
 
 class Genome() : 
 	
@@ -60,16 +64,27 @@ class Genome() :
 		TrueMutation = [0]
 		ObservedMutation = [0] 
 		while self.generation < nbr_generation : 
+			self.generation += 1
 			self.MutateGenome(m)
-			print(TrueMutation)
-			print(ObservedMutation)
-			TrueMutation += [self.nbr_mutation]
-			ObservedMutation += [self.Estimated_mutation()]
+			print(self.generation)
+			#print(TrueMutation)
+			#print(ObservedMutation)
+			if self.generation % 100 == 0 : 
+				print("yess")
+				TrueMutation += [self.nbr_mutation]
+				ObservedMutation += [self.Estimated_mutation()]
+		return([TrueMutation, ObservedMutation])
+
 		
 """
 19 inversions en 25 ans sur une bactérie comportant approximativement 4200 gènes, 
 4Mb de séquence codante. 
 environ 120 mutations ponctuelles sur la même durée
 """
-G1 = Genome(1000, 50)
-G1.Evolution_mutation(100,0.000001)  #Drosophile 3,4*10-10
+G1 = Genome(70, 3000)
+
+res = G1.Evolution_mutation(1000,0.1)  #Drosophile 3,4*10-10
+print(res)
+plt.plot(res[0], label = "True")
+plt.plot(res[1],label = "False")
+plt.show()
