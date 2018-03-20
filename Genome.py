@@ -78,35 +78,35 @@ class Genome() :
 			g = gene.posInit
 			gd = str(g)+"_d"
 			gf = str(g)+"_f"
-		if (g == genome_ancestral[0].posInit):
-			comp_graphe["D"] = [gd]
-			comp_graphe[gd] = ["D"]
-			comp_graphe[gf] = [str(g+1)+"_d"]
-		elif (g == genome_ancestral[-1].posInit):
-			comp_graphe[gd] = [str(g-1)+"_f"]
-			comp_graphe[gf] = ["F"]
-			comp_graphe["F"] = [gf]
-		else:
-			comp_graphe[gd] = [str(g-1)+"_f"]
-			comp_graphe[gf] = [str(g+1)+"_d"]
+			if (g == self.genome_ancestral[0].posInit):
+				comp_graphe["D"] = [gd]
+				comp_graphe[gd] = ["D"]
+				comp_graphe[gf] = [str(g+1)+"_d"]
+			elif (g == self.genome_ancestral[-1].posInit):
+				comp_graphe[gd] = [str(g-1)+"_f"]
+				comp_graphe[gf] = ["F"]
+				comp_graphe["F"] = [gf]
+			else:
+				comp_graphe[gd] = [str(g-1)+"_f"]
+				comp_graphe[gf] = [str(g+1)+"_d"]
 		
-		for i in range(len(genome)):
-			g = genome[i].posInit
-			gav = genome[i-1].posInit
-			gap = [(i+1)%len(genome)].posInit
-			if genome[i].sens == 1:
+		for i in range(len(self.genome)):
+			g = self.genome[i].posInit
+			gav = self.genome[i-1].posInit
+			gap = self.genome[(i+1)%len(self.genome)].posInit
+			if self.genome[i].sens == 1:
 				gd = str(g)+"_d"
 				gf = str(g)+"_f"
 			else:
 				gd = str(g)+"_f"
 				gf = str(g)+"_d"
 
-			if genome[i-1].sens==1:
+			if self.genome[i-1].sens==1:
 				gf_av = str(gav)+"_f"
 			else:
 				gf_av = str(gav)+"_d"
 
-			if genome[(i+1)%len(genome)].sens ==1:
+			if self.genome[(i+1)%len(self.genome)].sens ==1:
 				gd_ap = str(gap)+"_d"
 			else:
 				gd_ap = str(gap)+"_f"
@@ -115,7 +115,7 @@ class Genome() :
 				comp_graphe["D"].append(gd)
 				comp_graphe[gd].append("D")
 				comp_graphe[gf].append(gd_ap)
-			elif (i==len(genome)-1):
+			elif (i==len(self.genome)-1):
 				comp_graphe[gd].append(gf_av)
 				comp_graphe[gf].append("F")
 				comp_graphe["F"].append(gf)
@@ -158,12 +158,15 @@ def number_of_cycle(Dico):
 			if (start != end):
 				queue.remove(start)
 		c += 1
-	return (c,c2)
+	return (c)
 		
 """
 19 inversions en 25 ans sur une bactérie comportant approximativement 4200 gènes, 
 4Mb de séquence codante. 
 environ 120 mutations ponctuelles sur la même durée
 """
-G1 = Genome(1000, 50)
-G1.Evolution_mutation(100,0.000001)  #Drosophile 3,4*10-10
+G1 = Genome(100, 10)
+G1.Evolution_mutation(0,0.000001)  #Drosophile 3,4*10-10
+print("oooooooooooooooooo")
+dico = G1.Comp_graph()
+print(number_of_cycle(dico))
