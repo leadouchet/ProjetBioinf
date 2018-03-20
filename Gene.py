@@ -34,16 +34,13 @@ class Gene() :
 		self.sens *= -1 
 		self.inversions +=1
 
-	def MutationPonctuelles(self,m) :
-		n = 0
-		for base in range(self.size) : 
-			mute = random.random()
-			if mute < m : 
-				seq = list(self.bases) # On ne peut pas muter avec la meme base
-				n += 1
-				seq.remove(self.seq[base])
-				self.seq = self.seq[0:base] + random.choice(seq)+ self.seq[base+1 : self.size]
-				self.mutation += 1
+	def MutationPonctuelle(self) :
+		self.mutation +=1 
+		base_to_mut = random.randint(0,self.size-1)
+		mute = random.random()
+		seq = list(self.bases) # On ne peut pas muter avec la meme base
+		seq.remove(self.seq[base_to_mut])
+		self.seq = self.seq[0:base_to_mut] + random.choice(seq)+ self.seq[base_to_mut+1 : self.size]
 	
 	def nbMut(self):
 		return(pairwise2.align.globalms(self.seq, self, 0, 1, -10, -10, score_only=True))

@@ -42,9 +42,10 @@ class Genome() :
 				self.genome[g].Inversion_sequence()
 
 	def MutateGenome(self,m) : 
-		for gene in self.genome : 
-			gene.MutationPonctuelles(m)
-			self.nbr_mutation += gene.mutation
+		mute = random.random()
+		if (mute<m):
+			gene_to_mut = random.randint(0,self.nbr_gene-1)
+			self.genome[gene_to_mut].MutationPonctuelle()
 
 	
 	def Estimated_mutation(self) :
@@ -74,12 +75,13 @@ class Genome() :
 		inversion_observee = [0]
 		while self.nbr_inversion < nbr_inversion : 
 			self.Inversion_aleatoire()
-			if self.nbr_inversion % 100 == 0 : 
-				graph = self.Comp_graph()
-				print(graph)
-				nbr_cycle = self.number_of_cycle(graph)
-				print(nbr_cycle)
-				inversion_observee += [self.nbr_gene - nbr_cycle]
+			#if self.nbr_inversion % 1 == 0 : 
+			graph = self.Comp_graph()
+			#print(graph)
+			nbr_cycle = self.number_of_cycle(graph)
+			print(nbr_cycle)
+			print("oooooooooo")
+			inversion_observee += [self.nbr_gene - nbr_cycle + 1]
 		return(inversion_observee)
 
 	def Comp_graph(self):
@@ -174,8 +176,8 @@ class Genome() :
 4Mb de séquence codante. 
 environ 120 mutations ponctuelles sur la même durée
 """
-G1 = Genome(10, 3000)
-I = G1.Evolution_inversion(1)
+G1 = Genome(100, 10)
+I = G1.Evolution_inversion(100)
 plt.plot(range(0,len(I)), I , label = "Inversion observées")
 plt.plot(range(0,len(I)), range(0,len(I)), label = "Inversion effectuée")
 plt.show()
