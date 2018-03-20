@@ -7,7 +7,8 @@ from Bio import pairwise2
 
 class Gene() : 
 	
-	def __init__(self, size, PositionDebut, sequence = None) : 
+	def __init__(self, size, PositionDebut, posInit, sequence = None) : 
+		self.posInit = posInit
 		self.size = size
 		self.debut = PositionDebut
 		self.end = self.debut + self.size
