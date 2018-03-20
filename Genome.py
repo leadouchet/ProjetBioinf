@@ -2,7 +2,6 @@
 # -*- coding:utf-8 -*-
 from Gene import Gene
 import random
-import numpy as np
 from matplotlib import use
 use('qt4agg')
 import matplotlib.pyplot as plt
@@ -45,11 +44,13 @@ class Genome() :
 		for gene in self.genome : 
 			gene.MutationPonctuelles(m)
 			self.nbr_mutation += gene.mutation
+
 	
 	def Estimated_mutation(self) :
 		ObservedMutation = 0 
 		for gene in self.genome : 
-			ObservedMutation += gene.NeedlemanWunsch()
+			#ObservedMutation += gene.NeedlemanWunsch()
+			ObservedMutation += gene.nbMut()
 		return(ObservedMutation)
 			
 	def Evolution_mutation(self, nbr_generation, m) :
@@ -67,6 +68,18 @@ class Genome() :
 				ObservedMutation += [self.Estimated_mutation()]
 		return([TrueMutation, ObservedMutation])
 		
+	def Evolution_inversion(self, nbr_inversion) : 
+		inversion_observee = [0]
+		while self.nbr_inversion < nbr_inversion : 
+			self.Inversion_aleatoire()
+			if self.nbr_inversion % 100 == 0 : 
+				graph = self.Comp_graph()
+				print(graph)
+				nbr_cycle = self.number_of_cycle(graph)
+				print(nbr_cycle)
+				inversion_observee += [self.nbr_gene - nbr_cycle]
+		return(inversion_observee)
+
 	def Comp_graph(self):
 		comp_graphe = dict()
 		for gene in self.genome_ancestral :
@@ -118,16 +131,7 @@ class Genome() :
 				comp_graphe[gd].append(gf_av)
 				comp_graphe[gf].append(gd_ap)
 		return(comp_graphe)
-	
-	def Evolution_inversion(self, nbr_inversion) : 
-		inversion_observee = [0]
-		while self.nbr_inversion < nbr_inversion : 
-			self.Inversion_aleatoire()
-			if self.nbr_inversion % 100 == 0 : 
-				graph = self.Comp_graph()
-				nbr_cycle = self.number_of_cycle(graph)+1
-				inversion_observee += [self.nbr_gene - nbr_cycle]
-		return(inversion_observee)
+
 
 	def number_of_cycle(self,Dico):
 		c = 0

@@ -43,6 +43,10 @@ class Gene() :
 				self.seq = self.seq[0:base] + random.choice(seq)+ self.seq[base+1 : self.size]
 				self.mutation += 1
 	
+	def nbMut(self):
+		return(pairwise2.align.globalms(self.seq, self, 0, 1, -10, -10, score_only=True))
+	
+	
 	def NeedlemanWunsch(self) :
 		# Creation de la matrice F 
 		F = np.ones((self.size, self.size))
