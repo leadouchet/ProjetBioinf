@@ -70,6 +70,18 @@ class Genome() :
 				ObservedMutation += [self.Estimated_mutation()]
 		return([TrueMutation, ObservedMutation])
 		
+	def Evolution_inversion(self, nbr_inversion) : 
+		inversion_observee = [0]
+		while self.nbr_inversion < nbr_inversion : 
+			self.Inversion_aleatoire()
+			if self.nbr_inversion % 100 == 0 : 
+				graph = self.Comp_graph()
+				print(graph)
+				nbr_cycle = self.number_of_cycle(graph)
+				print(nbr_cycle)
+				inversion_observee += [self.nbr_gene - nbr_cycle]
+		return(inversion_observee)
+
 	def Comp_graph(self):
 		comp_graphe = dict()
 		for gene in self.genome_ancestral :
