@@ -13,7 +13,6 @@ class Gene() :
 		self.sens = 1
 		self.bases = ["A", "T", "G" , "C"]
 		self.mutation = 0
-		self.inversions = 0
 		if sequence == None : 
 			self.seq = self.CreateGene(self.size)
 		else : 
@@ -32,7 +31,6 @@ class Gene() :
 	def Inversion_sequence(self) :
 		self.seq = self.seq[::-1] 
 		self.sens *= -1 
-		self.inversions +=1
 
 	def MutationPonctuelle(self) :
 		self.mutation +=1 
